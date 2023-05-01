@@ -1,23 +1,22 @@
-﻿namespace MultiThreading.Task3.MatrixMultiplier.Matrices
+﻿namespace MultiThreading.Task3.MatrixMultiplier.Matrices;
+
+public interface IMatrix
 {
-    public interface IMatrix
-    {
-        #region properties
+    #region properties
 
-        long RowCount { get; }
+    long RowCount { get; }
 
-        long ColCount { get; }
+    long ColCount { get; }
 
-        #endregion
+    #endregion
 
-        #region methods
+    #region methods
 
-        void SetElement(long row, long col, long value);
+    void SetElement(long row, long col, long value);
 
-        long GetElement(long row, long col);
+    long GetElement(long row, long col);
 
-        void Print();
+    void Print();
 
-        #endregion
-    }
+    #endregion
 }
