@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MultiThreading.Task3.MatrixMultiplier.Matrices;
 using MultiThreading.Task3.MatrixMultiplier.Multipliers;
@@ -11,20 +12,43 @@ public class MultiplierTest
     [TestMethod]
     public void MultiplyMatrix3On3Test()
     {
-        TestMatrix3On3(new MatricesMultiplier());
-        TestMatrix3On3(new MatricesMultiplierParallel());
+        TestMatrix3X3(new MatricesMultiplier());
+        TestMatrix3X3(new MatricesMultiplierParallel());
     }
 
     [TestMethod]
     public void ParallelEfficiencyTest()
     {
-        // todo: implement a test method to check the size of the matrix which makes parallel multiplication more effective than
-        // todo: the regular one
+        var singleThreadMultiplier = new MatricesMultiplier();
+        var multiThreadMultiplier = new MatricesMultiplierParallel();
+        var size = 1;
+        while (size < 10_000)
+        {
+            var m1 = new Matrix(size, size, randomInit: true);
+            var m2 = new Matrix(size, size, randomInit: true);
+
+            var sw = Stopwatch.StartNew();
+            sw.Start();
+            singleThreadMultiplier.Multiply(m1, m2);
+            sw.Stop();
+
+            TimeSpan elapsedWithSingleThread = sw.Elapsed;
+
+            sw.Restart();
+            multiThreadMultiplier.Multiply(m1, m2);
+            sw.Stop();
+            TimeSpan elapsedWithMultiThread = sw.Elapsed;
+
+            //do validation until multiThread will be more efficient
+            Assert.IsTrue(elapsedWithSingleThread < elapsedWithMultiThread, $"Size : {size}X{size}");
+
+            size++;
+        }
     }
 
     #region private methods
 
-    void TestMatrix3On3(IMatricesMultiplier matrixMultiplier)
+    void TestMatrix3X3(IMatricesMultiplier matrixMultiplier)
     {
         if (matrixMultiplier == null)
         {

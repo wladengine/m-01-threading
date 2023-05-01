@@ -27,10 +27,20 @@ class Program
     private static void CreateAndProcessMatrices(byte sizeOfMatrix)
     {
         Console.WriteLine("Multiplying...");
-        var firstMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix);
-        var secondMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix);
+        var firstMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix, randomInit: true);
+        var secondMatrix = new Matrix(sizeOfMatrix, sizeOfMatrix, randomInit: true);
 
         IMatrix resultMatrix = new MatricesMultiplier().Multiply(firstMatrix, secondMatrix);
+
+        Console.WriteLine("firstMatrix:");
+        firstMatrix.Print();
+        Console.WriteLine("secondMatrix:");
+        secondMatrix.Print();
+        Console.WriteLine("resultMatrix:");
+        resultMatrix.Print();
+
+        Console.WriteLine("Parallel multiply:");
+        resultMatrix = new MatricesMultiplierParallel().Multiply(firstMatrix, secondMatrix);
 
         Console.WriteLine("firstMatrix:");
         firstMatrix.Print();
