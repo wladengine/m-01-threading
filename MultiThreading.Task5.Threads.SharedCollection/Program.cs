@@ -18,7 +18,6 @@ class Program
     private static readonly ManualResetEventSlim _producerFinishedWork = new(false);
     private static readonly ManualResetEventSlim _consumerHandledValue = new(false);
     private static readonly List<int> _collection = new();
-    private static readonly object lockObject = new();
 
     static void Main(string[] args)
     {
@@ -44,10 +43,7 @@ class Program
             Console.WriteLine($"Producer thread #{Environment.CurrentManagedThreadId} is adding value {i}...");
             Console.WriteLine();
 
-            lock (lockObject)
-            {
-                _collection.Add(i);
-            }
+            _collection.Add(i);
 
             _producerAddedNewValue.Set();
 
@@ -76,13 +72,11 @@ class Program
             Console.WriteLine($"Consumer thread #{Environment.CurrentManagedThreadId} is here!");
             Console.WriteLine("New value added! Here is the list of items:");
 
-            lock (lockObject)
+            foreach (int i in _collection)
             {
-                foreach (int i in _collection)
-                {
-                    Console.Write($"{i} ");
-                }
+                Console.Write($"{i} ");
             }
+
             Console.WriteLine();
             Console.WriteLine();
             _consumerHandledValue.Set();
