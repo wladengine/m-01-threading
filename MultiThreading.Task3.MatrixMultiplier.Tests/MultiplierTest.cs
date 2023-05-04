@@ -28,7 +28,6 @@ public class MultiplierTest
             var m2 = new Matrix(size, size, randomInit: true);
 
             var sw = Stopwatch.StartNew();
-            sw.Start();
             singleThreadMultiplier.Multiply(m1, m2);
             sw.Stop();
 
