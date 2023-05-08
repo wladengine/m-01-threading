@@ -34,11 +34,8 @@ class Program
 
         // feel free to add your code
         Console.WriteLine("a.    Continuation task should be executed regardless of the result of the parent task.");
-        const TaskContinuationOptions regardlessOptions = 
-            TaskContinuationOptions.None | TaskContinuationOptions.AttachedToParent;
-
         Task t1 = Task.Run(() => { DoSomeWork(OptionsToStart.Normal); })
-            .ContinueWith(_ => { ContinueSomeWork("with regardless AttachedToParent options"); }, regardlessOptions);
+            .ContinueWith(_ => { ContinueSomeWork("with regardless AttachedToParent options"); });
             
         t1.Wait();
 
