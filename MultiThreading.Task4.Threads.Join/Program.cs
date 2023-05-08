@@ -16,8 +16,8 @@ namespace MultiThreading.Task4.Threads.Join;
 
 class Program
 {
-    private static readonly Semaphore _semaphore = new(0, 10);
-    private const int MaxThreads = 15;
+    private static readonly Semaphore _semaphore = new(initialCount: 0, maximumCount: MaxThreads);
+    private const int MaxThreads = 10;
     static void Main(string[] args)
     {
         Console.WriteLine("4.	Write a program which recursively creates 10 threads.");
@@ -46,20 +46,6 @@ class Program
         Console.WriteLine("Done.");
         Console.WriteLine();
     }
-
-    private static void RunWithThreadPool()
-    {
-        Console.WriteLine("Doing work with ThreadPool...");
-        Console.WriteLine($"Current thread is {Environment.CurrentManagedThreadId}");
-        ThreadPool.QueueUserWorkItem(DoWorkWithPool, MaxThreads);
-        for (var i = 0; i < MaxThreads; i++) // Wait for all threads to complete
-        {
-            _semaphore.WaitOne();
-        }
-        Console.WriteLine("Done.");
-        Console.WriteLine();
-    }
-
     private static void DoWork(object state)
     {
         Console.WriteLine($"Current state is {state}; Current thread number is {Environment.CurrentManagedThreadId}");
@@ -72,14 +58,25 @@ class Program
         t.Join();
     }
 
+    private static void RunWithThreadPool()
+    {
+        Console.WriteLine("Doing work with ThreadPool...");
+        Console.WriteLine($"Current thread is {Environment.CurrentManagedThreadId:D2}");
+        ThreadPool.QueueUserWorkItem(DoWorkWithPool, MaxThreads);
+        _semaphore.WaitOne();
+        Console.WriteLine("Done.");
+        Console.WriteLine();
+    }
     private static void DoWorkWithPool(object state)
     {
-        Console.WriteLine($"Current state is {state}; Current thread number is {Environment.CurrentManagedThreadId}");
+        Console.WriteLine($"Current state is {state:D2}; Current thread number is {Environment.CurrentManagedThreadId:D2}");
         state = (int)state - 1;
-        _semaphore.Release();
-        if ((int)state <= 0) 
+        if ((int)state <= 0)
+        {
+            _semaphore.Release();
             return;
-        
+        }
+            
         ThreadPool.QueueUserWorkItem(DoWorkWithPool, state);
     }
 }
