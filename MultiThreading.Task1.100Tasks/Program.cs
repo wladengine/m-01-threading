@@ -28,13 +28,22 @@ internal class Program
 
     private static void HundredTasks()
     {
-        Parallel.For(0, TaskAmount, (taskNumber) =>
+        var tasks = new Task[TaskAmount];
+        for (var i = 0; i < TaskAmount; i++)
         {
-            for (var i = 0; i < MaxIterationsCount; i++)
-            {
-                Output(taskNumber + 1, i);
-            }
-        });
+            int taskNumber = i; // a local immutable copy of loop variable
+            tasks[i] = Task.Run(() => TaskWork(taskNumber));
+        }
+
+        Task.WaitAll(tasks);
+    }
+
+    private static void TaskWork(int number)
+    {
+        for (var i = 0; i < MaxIterationsCount; i++)
+        {
+            Output(number + 1, i);
+        }
     }
 
     private static void Output(int taskNumber, int iterationNumber)
