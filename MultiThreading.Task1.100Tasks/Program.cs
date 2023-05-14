@@ -4,15 +4,16 @@
  * “Task #0 – {iteration number}”.
  */
 using System;
+using System.Threading.Tasks;
 
 namespace MultiThreading.Task1._100Tasks;
 
-class Program
+internal class Program
 {
-    const int TaskAmount = 100;
-    const int MaxIterationsCount = 1000;
+    private const int TaskAmount = 100;
+    private const int MaxIterationsCount = 1000;
 
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Console.WriteLine(".Net Mentoring Program. Multi threading V1.");
         Console.WriteLine("1.	Write a program, which creates an array of 100 Tasks, runs them and waits all of them are not finished.");
@@ -25,12 +26,27 @@ class Program
         Console.ReadLine();
     }
 
-    static void HundredTasks()
+    private static void HundredTasks()
     {
-        // feel free to add your code here
+        var tasks = new Task[TaskAmount];
+        for (var i = 0; i < TaskAmount; i++)
+        {
+            int taskNumber = i; // a local immutable copy of loop variable
+            tasks[i] = Task.Run(() => TaskWork(taskNumber));
+        }
+
+        Task.WaitAll(tasks);
     }
 
-    static void Output(int taskNumber, int iterationNumber)
+    private static void TaskWork(int number)
+    {
+        for (var i = 0; i < MaxIterationsCount; i++)
+        {
+            Output(number + 1, i);
+        }
+    }
+
+    private static void Output(int taskNumber, int iterationNumber)
     {
         Console.WriteLine($"Task #{taskNumber} – {iterationNumber}");
     }
